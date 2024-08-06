@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <h1><a href="{% url 'homepage' %}">HOMEPAGE</a> </h1>
+{% endblock %}
+{% block content %}
+    {% for res in object_list %}
+
+        RECENSORE: {{ res.rev_customer.user.username }}<br><br>
+        <label>
+            <textarea rows="7" cols="70" style="resize: none" readonly>{{ res.review_text }}
+            </textarea>
+        </label>
+        <br>
+        VALUTAZIONE: {{ res.review_value }}
+        <br><br><br>
+    {% empty %}
+        <h2>Non sono ancora presenti recensioni da parte degli utenti</h2>
+    {% endfor %}
+{% endblock %}

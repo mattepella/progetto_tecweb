@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Logged Out{% endblock %}
+
+{% block content %}
+    <h1>Logged Out Successfully</h1>
+    <script type="text/javascript">
+        function redirect(){
+            window.location.href = "{% url 'homepage' %}";
+        }
+        setTimeout(redirect, 1500);
+    </script>
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <h1> <a href="{% url 'homepage' %}">HOMEPAGE</a></h1>
+    <br>
+{% endblock %}
+{% block content %}
+    {% if user.is_authenticated %}
+        {{ user.username }}
+    {% endif %}
+    <h2>Ristoranti a {{ view.kwargs.destination }}</h2>
+    <br>
+    {% for el in object_list %}
+        <h3>{{ el.restaurant_name }}</h3>
+        <h3>Costo coperto: {{ el.price }}</h3>
+        <img style="position:absolute; left: 10px" src="{{ el.image.url }}" alt="immagine ristorante" width="400px" height="300px">
+        <iframe style="position:relative;left: 450px;" width="300" height="300" id="gmap_canvas" src="https://maps.google.com/maps?q={{ el.address }}&t=&z=13&ie=UTF8&iwloc=&output=embed"></iframe>
+        <br>
+        <br>
+        <h3><a href="{% url 'book:watch_reviews' restaurant=el.restaurant_name  %}">Recensioni</a></h3>
+        <br><br><br>
+        {% if user.is_customer %}
+            <a href="{% url 'book:reservation' oid=el.id %}">PRENOTA</a><br><br>
+            <a href="{% url 'book:review' restaurant=el.id %}">RECENSISCI</a>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

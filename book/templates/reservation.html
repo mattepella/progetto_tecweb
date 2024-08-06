@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{ message.tags }} m-2" id="success_msg" role="alert">
+                <script type="text/javascript">
+                    msgs = document.getElementsByClassName('alert')
+                    for (let i=0; i<msgs.length; i++){
+                        window.setTimeout(function (){
+                            msgs[i].style.display='none';
+                        },2000);
+                    }
+                </script>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <h1><a href="{% url 'homepage' %}">HOMEPAGE</a> </h1>
+    <h1>Ciao {{ user.username }} effettua la tua prenotazione: </h1><br>
+    {% for el in res %}
+        <h3>{{ el.restaurant_name }}</h3><br>
+        <img src="{{ el.image.url }}" alt="immagine" width="400px" height="300px"><br><br><br>
+    {% endfor %}
+
+    <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% crispy form %}
+    </form>
+{% endblock %}

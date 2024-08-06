@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block head %}
+    <h1><a href="{% url 'homepage' %}">HOMEPAGE</a> </h1>
+{% endblock %}
+{% block content %}
+
+    {% for el in object_list %}
+        <form method="post" action="{% url 'book:delete_reservation' pk=el.pk %}">
+            {% csrf_token %}
+            <h2>Prenotazione: {{ el.reservation }}</h2>
+            <h3>{{ el.restaurant.restaurant_name }} </h3>{{ el.res_datetime }}<br>
+            <img src='{{ el.restaurant.image.url }}' alt="immagine ristorante" width="400px" height="300px">
+            <button type="submit">Cancella</button>
+            <br>
+        </form>
+    {% endfor %}
+
+{% endblock %}

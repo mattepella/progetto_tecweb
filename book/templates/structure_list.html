@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block  head %}
+    <h1><a href="{% url 'homepage' %}">HOMEPAGE</a> </h1>
+{% endblock %}
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{ message.tags }} m-2" id="success_msg" role="alert">
+                <script type="text/javascript">
+                    msgs = document.getElementsByClassName('alert')
+                    for (let i=0; i<msgs.length; i++){
+                        window.setTimeout(function (){
+                            msgs[i].style.display='none';
+                        },2000);
+                    }
+                </script>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <h2>Proprietario: {{ user.username }}</h2><br><br>
+    {% for res in object_list %}
+        <form method="post" id="delete" action="{% url 'book:delete_restaurant' pk=res.pk %}">
+            {% csrf_token %}
+            <h3>Nome ristorante: {{ res.restaurant_name }}</h3>
+            <h3>Località: {{ res.city }}</h3>
+            <h3>Prezzo coperto: {{ res.price}} €</h3>
+            <img src=" {{ res.image.url }}" alt="Immagine struttura" height="300" width="300"/>
+            <button type="submit" class="btn-danger">Cancella</button>
+        </form>
+        <br>
+        <form method="get" id="review" action="{% url 'book:watch_reviews' restaurant=res.restaurant_name %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-success">RECENSIONI</button>
+        </form>
+    {% endfor %}
+{% endblock %}
