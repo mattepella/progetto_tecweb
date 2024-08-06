@@ -31,7 +31,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'bootstrap',
     'crispy_forms',
     'crispy_bootstrap4',
     'book.apps.BookConfig',

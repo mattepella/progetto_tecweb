@@ -37,7 +37,11 @@
                             <a class="dropdown-item" href="{% url 'book:add_structure' %}">Aggiungi una Struttura</a>
                             <a class="dropdown-item" href="{% url 'book:structure_list' %}">Visualizza Strutture</a>
                         {% endif %}
-                        <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+                        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                            {% csrf_token %}
+                                <button type="submit" class="dropdown-item">Logout</button>
+                        </form>
+
                     {% else %}
                         <a class="dropdown-item" href="{% url 'owner-registration' %}">Registrati come proprietario</a>
                         <a class="dropdown-item" href="{% url 'customer-registration' %}">Registrati</a>
