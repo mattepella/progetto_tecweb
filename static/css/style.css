@@ -1,0 +1,55 @@
+.section {
+	padding-top: 20px;
+	position: relative;
+	height: 100vh;
+	font-family: 'Montserrat', sans-serif;
+	background-image: url('../img/ristorante.jpg');
+	background-size: cover;
+	background-position: center;
+	font-weight: 300;
+}
+
+.searchBar {
+	margin-top: 200px;
+	text-align: center;
+}
+.dropdown .btn{
+	background-color: white;
+}
+.btn:focus{
+	background-color: white;
+}
+
+
+.dropdown .btn:active{
+	background-color: white;
+}
+
+#searchQueryInput {
+	width: 600px;
+	height: 32px;
+	background: #f5f5f5;
+	outline: none;
+	border: none;
+	border-radius: 1.625rem;
+	padding: 0 3.5rem 0 1.5rem;
+	font-size: 1rem;
+}
+
+#searchQuerySubmit {
+	width: 3.5rem;
+	height: 2.8rem;
+	margin-left: -3.5rem;
+	background: none;
+	border: none;
+	outline: none;
+}
+
+#searchQuerySubmit:hover {
+	cursor: pointer;
+}
+
+.presentazione {
+	font-family: Montserrat, sans-serif;
+	color: #ffffff
+}
