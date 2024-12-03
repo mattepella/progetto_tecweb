@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, DeleteView
 from .forms import AddStructureForm, ReservationForm, ReviewForm
-from .models import Restaurant, Reservation, Review
+from .models import Restaurant, Reservation, Review, Tag
 from datetime import datetime
 from django.contrib import messages
 
@@ -149,8 +149,25 @@ class Results(ListView):
     template_name = 'results.html'
     model = Restaurant
 
-    def get_queryset(self, **kwargs):
-        return Restaurant.objects.filter(city=self.kwargs['destination'])
+    def get_queryset(self):
+        destination = self.kwargs['destination']
+        selected_tags = self.request.GET.getlist('tags')
+
+        # Filtra i ristoranti in base alla destinazione
+        queryset = Restaurant.objects.filter(city=destination)
+
+        # Se ci sono tag selezionati, applica anche il filtro per i tag
+        if selected_tags:
+            queryset = queryset.filter(tags__id__in=selected_tags).distinct()
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Passa anche i tag disponibili alla vista
+        context['tags'] = Tag.objects.all()
+        context['selected_tags'] = self.request.GET.getlist('tags')  # I tag selezionati dalla query
+        return context
 
 
 class WatchReviews(ListView):
