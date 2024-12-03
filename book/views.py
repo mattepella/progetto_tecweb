@@ -153,20 +153,19 @@ class Results(ListView):
         destination = self.kwargs['destination']
         selected_tags = self.request.GET.getlist('tags')
 
-        # Filtra i ristoranti in base alla destinazione
         queryset = Restaurant.objects.filter(city=destination)
 
-        # Se ci sono tag selezionati, applica anche il filtro per i tag
         if selected_tags:
-            queryset = queryset.filter(tags__id__in=selected_tags).distinct()
+            for tag_id in selected_tags:
+                queryset = queryset.filter(tags__id__in=tag_id)
 
         return queryset
 
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Passa anche i tag disponibili alla vista
         context['tags'] = Tag.objects.all()
-        context['selected_tags'] = self.request.GET.getlist('tags')  # I tag selezionati dalla query
+        context['selected_tags'] = self.request.GET.getlist('tags')
         return context
 
 

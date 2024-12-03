@@ -9,18 +9,18 @@
         {{ user.username }}
     {% endif %}
     <h2>Ristoranti a {{ view.kwargs.destination }}</h2>
-    <!-- Form di filtraggio per tag -->
     <form method="get">
-        <label>Filtra per tag:</label>
-        {% for tag in tags %}
-            <label>
-                <input type="checkbox" name="tags" value="{{ tag.id }}"
-                    {% if tag.id in selected_tags %} checked {% endif %}>
-                {{ tag.name }}
-            </label><br>
-        {% endfor %}
-        <button type="submit">Cerca</button>
-    </form>
+    <label>Filtra per tag:</label>
+    {% for tag in tags %}
+        <label>
+            <input type="checkbox" name="tags" value="{{ tag.id }}"
+                {% if tag.id|stringformat:"s" in selected_tags %} checked {% endif %}>
+            {{ tag.name }}
+        </label><br>
+    {% endfor %}
+    <button type="submit">Cerca</button>
+</form>
+
     <br>
     {% for el in object_list %}
         <h3>{{ el.restaurant_name }}</h3>
