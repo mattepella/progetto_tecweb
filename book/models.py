@@ -12,6 +12,13 @@ class Customer(models.Model):
     short_bio = models.CharField(max_length=255)
 
 
+class Tag(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Restaurant(models.Model):
     total_seats = models.IntegerField(default=10)
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -24,6 +31,7 @@ class Restaurant(models.Model):
     start_dinner = models.TimeField(null=True)
     end_dinner = models.TimeField(null=True)
     price = models.IntegerField()
+    tags = models.ManyToManyField(Tag, related_name='restaurants', blank=True)
 
     def save(self, *args, **kwargs):
         self.city = self.city.lower()

@@ -1,0 +1,19 @@
+form {
+    padding: 20px;
+    margin: 20px auto;
+
+}
+
+.image-upload {
+    display: inline-block;
+    cursor: pointer;
+}
+
+.form-row {
+    display: flex;
+    gap: 10px;
+}
+
+.form-row .form-control {
+    width: 100%;
+}

@@ -1,13 +1,21 @@
-from crispy_forms.layout import Submit, Layout, Field
+from crispy_forms.bootstrap import InlineCheckboxes
+from crispy_forms.layout import Submit, Layout, Field, Div
 from django import forms
 from django.contrib.auth import password_validation
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from crispy_forms.helper import FormHelper
 
-from book.models import CustomUser, Customer, Restaurant, Review
+from book.models import CustomUser, Customer, Restaurant, Review, Tag
 
 
 class AddStructureForm(forms.ModelForm):
+
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label='seleziona i tag:'
+    )
 
     restaurant_name = forms.CharField(
         max_length=255,
@@ -45,7 +53,8 @@ class AddStructureForm(forms.ModelForm):
     )
 
     image = forms.ImageField(
-        label="Immagine:"
+        label="Immagine:",
+        widget=forms.FileInput(attrs={'class': 'image-upload'})
     )
 
     address = forms.CharField(
@@ -66,17 +75,29 @@ class AddStructureForm(forms.ModelForm):
             Field('total_seats', style='max-width: 70px'),
             Field('price', style='max-width: 70px'),
             Field('city', style='max-width: 300px'),
-            Field('start_lunch', style='max-width: 80px'),
-            Field('end_lunch', style='max-width: 80px'),
-            Field('start_dinner', style='max-width: 80px'),
-            Field('end_dinner', style='max-width: 80px'),
-            Field('image', style='max-width: 70px'),
+            Div(
+                Field('start_lunch', style='max-width: 80px'),
+                Field('end_lunch', style='max-width: 80px'),
+                css_class='form-row'
+            ),
+            Div(
+                Field('start_dinner', style='max-width: 80px'),
+                Field('end_dinner', style='max-width: 80px'),
+                css_class='form-row'
+            ),
+            Div(
+                Field('image'),
+                css_class='image-upload'
+            ),
+
+
+            InlineCheckboxes('tags'),
         )
 
     class Meta:
         model = Restaurant
         fields = ['restaurant_name', 'address', 'city', 'start_lunch', 'total_seats', 'start_dinner',
-                  'end_lunch', 'end_dinner', 'price', 'image']
+                  'end_lunch', 'end_dinner', 'price', 'image', 'tags']
 
 
 class ReviewForm(forms.ModelForm):

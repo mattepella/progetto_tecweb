@@ -1,0 +1,5 @@
+username,is_customer,is_owner,password,short_bio
+user1,True,False,securepassword1,"Mi piace cucinare"
+user2,True,False,securepassword2,"Amo viaggiare"
+owner1,False,True,ownerpassword1
+owner2,False,True,ownerpassword2
