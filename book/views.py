@@ -77,7 +77,7 @@ def check_time(restaurant, res_time):
 
     elif restaurant.start_dinner <= res_time <= restaurant.end_dinner or \
             (res_time.strftime('%p') == 'PM' and restaurant.end_dinner.strftime('%p') == 'AM' and
-             res_time.hour <= restaurant.end_dinner.hour+24 and res_time >= restaurant.start_dinner) or \
+             res_time.hour <= restaurant.end_dinner.hour + 24 and res_time >= restaurant.start_dinner) or \
             (res_time.strftime('%p') == 'AM' and restaurant.end_dinner.strftime('%p') == 'AM' and
              restaurant.end_dinner.hour + 24 >= res_time.hour + 24 >= restaurant.start_dinner.hour):
         return 'dinner'
@@ -160,7 +160,6 @@ class Results(ListView):
                 queryset = queryset.filter(tags__id__in=tag_id)
 
         return queryset
-
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

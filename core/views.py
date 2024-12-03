@@ -1,9 +1,10 @@
+from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
 from book.forms import CustomerRegister, OwnerRegister, HomeForm
-from book.models import CustomUser
+from book.models import CustomUser, Restaurant
 
 
 class RegisterCustomer(CreateView):
@@ -18,10 +19,17 @@ def home_page(response):
         form = HomeForm(response.POST)
         if form.is_valid():
             destination = form.cleaned_data['destinazione'].lower()
+            if not Restaurant.objects.filter(city=destination):
+                messages.error(response, "nessun ristorante disponibile per la località inserita")
+                return render(response, "home.html", {'form': form})
             return redirect('book:results', destination)
+        else:
+            messages.error(response,"inserire una città")
+            return render(response, "home.html", {'form': form})
     else:
         form = HomeForm()
-        return render(response, "home.html", {'form': form})
+    return render(response, "home.html", {'form': form})
+
 
 
 class RegisterOwner(CreateView):
