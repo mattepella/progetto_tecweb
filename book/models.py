@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, User
 from django.db import models
 
 
@@ -19,6 +19,17 @@ class Tag(models.Model):
         return self.name
 
 
+class Notification(models.Model):
+    customer = models.ForeignKey('Customer', on_delete=models.CASCADE, related_name="notifications")
+    restaurant = models.ForeignKey('Restaurant', on_delete=models.CASCADE, related_name="notifications", null=True, blank=True)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Notification for {self.customer.user.username} - {self.message}"
+
+
 class Restaurant(models.Model):
     total_seats = models.IntegerField(default=10)
     owner = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
@@ -27,6 +38,7 @@ class Restaurant(models.Model):
     image = models.ImageField(upload_to='owners_photos')
     start_lunch = models.TimeField()
     address = models.CharField(max_length=255, null=True)
+    waiting_list = models.ManyToManyField(Customer, related_name="waiting_restaurants", blank=True)
     end_lunch = models.TimeField()
     start_dinner = models.TimeField(null=True)
     end_dinner = models.TimeField(null=True)

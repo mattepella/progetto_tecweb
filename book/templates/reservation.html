@@ -28,5 +28,19 @@
     <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {% crispy form %}
-    </form>
+
+    {% if not success %}
+        {% if "Non ci sono più posti disponibili" in message %}
+            <div class="form-group">
+                {{ form.add_to_waiting_list }}
+            </div>
+        {% endif %}
+    {% endif %}
+
+</form>
+
+
+
+
+
 {% endblock %}

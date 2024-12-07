@@ -130,6 +130,8 @@ class HomeForm(forms.Form):
 
 class ReservationForm(forms.Form):
 
+    add_to_waiting_list = forms.BooleanField(required=False, label='Vuoi metterti in lista di attesa?', widget=forms.HiddenInput())
+
     seats = forms.IntegerField(
         label='seleziona numero di persone: '
     )
@@ -149,6 +151,7 @@ class ReservationForm(forms.Form):
             Field('seats', style='max-width: 300px'),
             Field('res_date', style='max-width: 300px'),
             Field('res_time', style='max-width: 300px'),
+            Field('add_to_waiting_list', style='margin-top: 5px;'),
             Submit('submit', 'Prenota')
         )
 

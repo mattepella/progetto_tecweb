@@ -8,9 +8,6 @@
     {% if user.is_authenticated %}
         {{ user.username }}
     {% endif %}
-    {% if not object_list %}
-    <h1>nessun ristorante presente in questa località</h1>
-    {% else %}
         <h2>Ristoranti a {{ view.kwargs.destination }}</h2>
         <form method="get">
         <label>Filtra per tag:</label>
@@ -39,5 +36,4 @@
                 <a href="{% url 'book:review' restaurant=el.id %}">RECENSISCI</a>
             {% endif %}
         {% endfor %}
-    {% endif %}
 {% endblock %}

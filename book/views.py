@@ -1,7 +1,8 @@
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, redirect
+from core.notify import create_notification
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, ListView, DeleteView
@@ -9,6 +10,7 @@ from .forms import AddStructureForm, ReservationForm, ReviewForm
 from .models import Restaurant, Reservation, Review, Tag
 from datetime import datetime
 from django.contrib import messages
+from django.forms.widgets import CheckboxInput
 
 
 def owner_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login_url='login'):
@@ -42,25 +44,35 @@ def add_review(response, restaurant):
 
 
 class DeleteRestaurant(DeleteView):
+    print('classe delete entrata')
     template_name = 'structure_list.html'
     model = Restaurant
     success_message = 'Ristorante cancellato con successo!'
     success_url = reverse_lazy('book:structure_list')
 
     def delete(self, request, *args, **kwargs):
+        print('metoto delete entrato')
         messages.success(self.request, self.success_message)
         return super(DeleteRestaurant, self).delete(request, *args, **kwargs)
 
 
-class DeleteReservation(DeleteView):
-    template_name = 'reservation_list.html'
-    model = Reservation
-    success_message = 'Prenotazione cancellata con successo!'
-    success_url = reverse_lazy('book:watch_reservations')
+def delete_reservation(request, pk):
+    reservation = get_object_or_404(Reservation, pk=pk)
+    waiting_list_customers = reservation.restaurant.waiting_list.all()
 
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, self.success_message)
-        return super(DeleteReservation, self).delete(request, *args, **kwargs)
+    # Crea notifiche per i clienti in lista d'attesa
+    for customer in waiting_list_customers:
+        message = f'Si sono liberati dei posti al ristorante {reservation.restaurant.restaurant_name}'
+        create_notification(customer, message)
+
+    # Cancella la prenotazione
+    reservation.delete()
+
+    # Aggiungi un messaggio di successo
+    messages.success(request, 'Prenotazione cancellata con successo!')
+
+    # Redirigi alla lista delle prenotazioni
+    return redirect('book:watch_reservations')
 
 
 class ReservationsList(ListView):
@@ -130,18 +142,28 @@ def reservation(response, oid):
             seats = form.cleaned_data['seats']
             d = check_reservation(response.user, restaurant, seats, res_datetime)
             if d['success']:
-                Reservation.objects.create(customer_id=response.user.id, restaurant=restaurant, seats=seats,
+                Reservation.objects.create(customer=response.user.customer, restaurant=restaurant, seats=seats,
                                            res_datetime=res_datetime)
                 messages.success(response, d['message'])
             else:
                 messages.error(response, d['message'])
-                return render(response, 'reservation.html', {'form': form})
+                if "Non ci sono più posti disponibili" in d['message']:
+                    form.fields['add_to_waiting_list'].widget = CheckboxInput()
+                    add_to_waiting_list = form.cleaned_data.get("add_to_waiting_list")
+                    if add_to_waiting_list:
+                        if response.user.customer not in restaurant.waiting_list.all():
+                            restaurant.waiting_list.add(response.user.customer)
+                            messages.success(response, "Sei stato aggiunto alla lista di attesa!")
+                        else:
+                            messages.error(response, "Sei già in lista di attesa per questo ristorante!")
+                return render(response, 'reservation.html', {'form': form, 'success': False, 'message': d['message']})
             return redirect('homepage')
         else:
             form = ReservationForm()
             return render(response, 'reservation.html', {'form': form})
     else:
         form = ReservationForm()
+
         return render(response, 'reservation.html', {'form': form})
 
 

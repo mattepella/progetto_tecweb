@@ -2,8 +2,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 
-from .views import AddStructure, StructureList, Results, reservation, ReservationsList, DeleteReservation, \
-    DeleteRestaurant, add_review, WatchReviews
+from .views import AddStructure, StructureList, Results, reservation, ReservationsList, \
+    DeleteRestaurant, add_review, WatchReviews, delete_reservation
 
 app_name = 'book'
 
@@ -14,7 +14,7 @@ urlpatterns = [
     path('results/<str:destination>/', Results.as_view(), name='results'),
     path('results/<int:restaurant>/review', add_review, name='review'),
     path('reservations', ReservationsList.as_view(), name='watch_reservations'),
-    path('reservations/<int:pk>', DeleteReservation.as_view(), name='delete_reservation'),
+    path('reservations/<int:pk>', delete_reservation, name='delete_reservation'),
     path('results/<int:oid>', reservation, name='reservation'),
     path('reviews/<str:restaurant>', WatchReviews.as_view(), name='watch_reviews'),
 
