@@ -145,6 +145,9 @@ def reservation(response, oid):
             if d['success']:
                 Reservation.objects.create(customer=response.user.customer, restaurant=restaurant, seats=seats,
                                            res_datetime=res_datetime)
+                message = (f'{restaurant.restaurant_name} prenotazione effettuata da {response.user.username} per il giorno: '
+                           f'{res_datetime}')
+                create_notification(restaurant.owner, restaurant=restaurant, message=message)
                 messages.success(response, d['message'])
             else:
                 messages.error(response, d['message'])
@@ -153,7 +156,7 @@ def reservation(response, oid):
                     add_to_waiting_list = form.cleaned_data.get("add_to_waiting_list")
                     if add_to_waiting_list:
                         if response.user.customer not in restaurant.waiting_list.all():
-                            restaurant.waiting_list.add(response.user.customer)
+                            restaurant.waiting_list.add(response.user)
                             messages.success(response, "Sei stato aggiunto alla lista di attesa!")
                         else:
                             messages.error(response, "Sei già in lista di attesa per questo ristorante!")

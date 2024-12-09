@@ -21,14 +21,13 @@ def mark_notification_as_read(request, notification_id):
     # Segna la notifica come letta
     notification.is_read = True
     notification.save()
-    print(notification.customer)
 
     # Se la notifica ha un ristorante associato
     if notification.restaurant:
         # Rimuovi l'utente dalla lista di attesa del ristorante
         restaurant = notification.restaurant
-        if notification.customer in restaurant.waiting_list.all():
-            restaurant.waiting_list.remove(notification.customer)
+        if notification.CustomUser in restaurant.waiting_list.all():
+            restaurant.waiting_list.remove(notification.CustomUser)
             messages.success(request, f"Sei stato rimosso dalla lista di attesa del ristorante {restaurant.restaurant_name}.")
 
     return redirect('homepage')
@@ -36,9 +35,9 @@ def mark_notification_as_read(request, notification_id):
 
 def home_page(response):
     # Controlla se l'utente è autenticato
-    if response.user.is_authenticated and response.user.is_customer:
+    if response.user.is_authenticated:
         # Filtra le notifiche non lette per l'utente corrente
-        unread_notifications = Notification.objects.filter(customer=response.user.customer, is_read=False)
+        unread_notifications = Notification.objects.filter(CustomUser=response.user, is_read=False)
         unread_count = unread_notifications.count()  # Conta le notifiche non lette
     else:
         unread_notifications = []
