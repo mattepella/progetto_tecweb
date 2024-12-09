@@ -33,12 +33,15 @@ def add_review(response, restaurant):
     if response.method == "POST":
         form = ReviewForm(response.POST)
         if form.is_valid():
+            if Review.objects.filter(rev_customer_id=response.user.id, review_res=restaurant):
+                messages.error(response, "hai gia una recensione per questo ristorante!")
+                return redirect('homepage')
             value = form.cleaned_data['review_value']
             text = form.cleaned_data['review_text']
             res = Restaurant.objects.get(id=restaurant)
             Review.objects.create(review_res=res, rev_customer_id=response.user.id, review_value=value,
                                   review_text=text)
-            return render(response, 'home.html')
+            return redirect('homepage')
         else:
             return render(response, 'add_review.html', {'form': form})
     form = ReviewForm()

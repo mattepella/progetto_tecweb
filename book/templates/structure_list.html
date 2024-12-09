@@ -36,6 +36,7 @@
         </form>
         <form method="get" id="infos" action="{% url 'book:watch_infos' restaurant=res.id %}">
             {% csrf_token %}
+            <br>
             <button type="submit" class="btn-success">INFO RISTORANTE</button>
         </form>
     {% endfor %}
