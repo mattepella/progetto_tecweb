@@ -42,7 +42,8 @@ def add_review(response, restaurant):
         else:
             return render(response, 'add_review.html', {'form': form})
     form = ReviewForm()
-    return render(response, 'add_review.html', {'form': form})
+    city = Restaurant.objects.get(id=restaurant).city
+    return render(response, 'add_review.html', {'form': form, 'city':city})
 
 
 class DeleteRestaurant(DeleteView):
@@ -167,8 +168,11 @@ def reservation(response, oid):
             return render(response, 'reservation.html', {'form': form})
     else:
         form = ReservationForm()
-
-        return render(response, 'reservation.html', {'form': form})
+        restaurant = Restaurant.objects.get(id=oid)
+        image = restaurant.image
+        city = restaurant.city
+        res_name = restaurant.restaurant_name
+        return render(response, 'reservation.html', {'form': form, 'city': city, 'image': image, 'res_name': res_name})
 
 
 class Results(ListView):

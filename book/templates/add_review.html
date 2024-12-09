@@ -3,6 +3,7 @@
 {% load static %}
 {% block head %}
     <h1> <a href="{% url 'homepage' %}">HOMEPAGE</a></h1>
+    <h2> <a href="{% url 'book:results' destination=city %}">TORNA AI RISTORANTI</a></h2>
 {% endblock %}
 {% block content %}
     <form method="post">

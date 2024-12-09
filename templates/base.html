@@ -2,6 +2,66 @@
 <!doctype html>
 <html lang="en">
 <head>
+<div id="booking" class="section">
+        <nav class="menu">
+            <div class="dropdown">
+                <button class="profile btn btn-secondary float-right dropdown-toggle" type="button" id="profile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img src="{% static 'img/profile.png' %}" width="25px" height="25px" alt="Profile">
+                    {% if unread_count > 0 %}
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                         {{ unread_count }}
+                        </span>
+                    {% endif %}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="profile">
+                    {% if user.is_authenticated %}
+                        <div class="dropdown-item">
+                            <strong>{{ user.username }}</strong>
+                        </div>
+                        <div class="dropdown-item">
+                            <strong>Notifiche</strong>
+                            {% if unread_count > 0 %}
+                                <span class="badge bg-danger">{{ unread_count }}</span>
+                            {% endif %}
+                        </div>
+
+                        {% if unread_notifications %}
+                            <ul class="list-unstyled">
+                                {% for notification in unread_notifications %}
+                                    <li>
+                                        <a href="{% url 'mark_notification_as_read' notification.id %}" class="dropdown-item">
+                                            {{ notification.message }}
+                                            <small class="text-muted d-block">{{ notification.created_at|date:"d M Y, H:i" }}</small>
+                                        </a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <div class="dropdown-item text-muted">Nessuna notifica</div>
+                        {% endif %}
+
+                        <div class="dropdown-divider"></div>
+
+                        {% if user.is_customer %}
+                            <a class="dropdown-item" href="{% url 'book:watch_reservations' %}">Visualizza Prenotazioni</a>
+                        {% elif user.is_owner %}
+                            <a class="dropdown-item" href="{% url 'book:add_structure' %}">Aggiungi una Struttura</a>
+                            <a class="dropdown-item" href="{% url 'book:restaurant_list' %}">Visualizza Strutture</a>
+                        {% endif %}
+
+                        <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="dropdown-item">Logout</button>
+                        </form>
+
+                    {% else %}
+                        <a class="dropdown-item" href="{% url 'owner-registration' %}">Registrati come proprietario</a>
+                        <a class="dropdown-item" href="{% url 'customer-registration' %}">Registrati</a>
+                        <a class="dropdown-item" href="{% url 'login' %}">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport"
@@ -21,6 +81,7 @@
 <body>
 
 {% block content %}
+
 
 {% endblock %}
 

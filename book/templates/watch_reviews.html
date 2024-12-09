@@ -2,6 +2,12 @@
 {% load static %}
 {% block head %}
     <h1><a href="{% url 'homepage' %}">HOMEPAGE</a> </h1>
+    {% if user.is_owner %}
+    <h2><a href="{% url 'book:restaurant_list' %}">TORNA AI RISTORANTI</a></h2>
+    {% endif %}
+    {% if user.is_customer %}
+        <h2><a href="{% url 'book:results' destination=object_list.0.review_res.city %}">TORNA AI RISTORANTI</a></h2>
+    {% endif %}
 {% endblock %}
 {% block content %}
     {% for res in object_list %}
