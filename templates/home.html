@@ -47,7 +47,6 @@
                             <ul class="list-unstyled">
                                 {% for notification in unread_notifications %}
                                     <li>
-                                    <!-- Modifica il link per segnare la notifica come letta -->
                                         <a href="{% url 'mark_notification_as_read' notification.id %}" class="dropdown-item">
                                             {{ notification.message }}
                                             <small class="text-muted d-block">{{ notification.created_at|date:"d M Y, H:i" }}</small>
@@ -65,7 +64,7 @@
                             <a class="dropdown-item" href="{% url 'book:watch_reservations' %}">Visualizza Prenotazioni</a>
                         {% elif user.is_owner %}
                             <a class="dropdown-item" href="{% url 'book:add_structure' %}">Aggiungi una Struttura</a>
-                            <a class="dropdown-item" href="{% url 'book:structure_list' %}">Visualizza Strutture</a>
+                            <a class="dropdown-item" href="{% url 'book:restaurant_list' %}">Visualizza Strutture</a>
                         {% endif %}
 
                         <form method="post" action="{% url 'logout' %}" style="display:inline;">

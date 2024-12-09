@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block  head %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <h1><a href="{% url 'homepage' %}">HOMEPAGE</a> </h1>
+    <h2><a href="{% url 'book:restaurant_list' %}">TORNA AI RISTORANTI</a></h2>
+{% endblock %}
+{% block content %}
+    {{ restaurant.restaurant_name }}
+    <br>
+    <img src=" {{ restaurant.image.url }}" alt="Immagine struttura" height="400" width="400"/>
+    <h1>{{ restaurant.name }}</h1>
+    <p>Punteggio medio: {{ average_rating|floatformat:1 }}</p>
+
+    <canvas id="ratingChart" style="max-width: 400px; max-height: 400px;"></canvas>
+    <br>
+    <canvas id="reservationChart" style="width: 400px; height: 100px;"></canvas>
+
+<script>
+    const ctxReviews = document.getElementById('ratingChart');
+    new Chart(ctxReviews, {
+        type: 'pie',
+        data: {
+            labels: {{ chart_data_reviews.labels|safe }},
+            datasets: [{
+                data: {{ chart_data_reviews.data|safe }},
+                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((sum, value) => sum + value, 0);
+                            const value = context.raw;
+                            const percentage = ((value / total) * 100).toFixed(1) + '%';
+                            return `${context.label}: ${value} (${percentage})`;
+                        }
+                    }
+                }
+            }
+        }
+    });
+// Grafico delle prenotazioni settimanali
+    const ctxReservations = document.getElementById('reservationChart');
+    new Chart(ctxReservations, {
+        type: 'bar',
+        data: {
+            labels: {{ chart_data_reservations.labels|safe }},
+            datasets: [{
+                label: 'Prenotazioni settimanali',
+                data: {{ chart_data_reservations.data|safe }},
+                backgroundColor: '#36A2EB',
+                borderColor: '#36A2EB',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
+

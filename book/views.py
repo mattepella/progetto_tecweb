@@ -1,6 +1,8 @@
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Avg, Count
+
 from core.notify import create_notification
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
@@ -51,7 +53,6 @@ class DeleteRestaurant(DeleteView):
     success_url = reverse_lazy('book:structure_list')
 
     def delete(self, request, *args, **kwargs):
-        print('metoto delete entrato')
         messages.success(self.request, self.success_message)
         return super(DeleteRestaurant, self).delete(request, *args, **kwargs)
 
@@ -63,7 +64,7 @@ def delete_reservation(request, pk):
     # Crea notifiche per i clienti in lista d'attesa
     for customer in waiting_list_customers:
         message = f'Si sono liberati dei posti al ristorante {reservation.restaurant.restaurant_name}'
-        create_notification(customer, message)
+        create_notification(customer, reservation.restaurant, message)
 
     # Cancella la prenotazione
     reservation.delete()
@@ -206,6 +207,38 @@ class StructureList(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
         return Restaurant.objects.filter(owner=user)
+
+
+def watchinfos(request, restaurant):
+    res = get_object_or_404(Restaurant, id=restaurant)
+    reservations = Reservation.objects.filter(restaurant=res)
+    days_of_week = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica']
+    reservation_count = {day: 0 for day in days_of_week}
+    for reservation in reservations:
+        day_of_week = reservation.res_datetime.weekday()  # Restituisce un numero tra 0 (Lunedì) e 6 (Domenica)
+        reservation_count[days_of_week[day_of_week]] += 1
+
+    reviews = Review.objects.filter(review_res=res)
+    avg_rating = reviews.aggregate(Avg('review_value'))['review_value__avg']
+    ratings_distribution = reviews.values('review_value').annotate(count=Count('review_value')).order_by('review_value')
+
+    chart_data_reviews = {
+        'labels': [str(item['review_value']) for item in ratings_distribution],
+        'data': [item['count'] for item in ratings_distribution],
+    }
+
+    chart_data_reservations = {
+        'labels': days_of_week,
+        'data': [reservation_count[day] for day in days_of_week],
+    }
+
+    context = {
+        'restaurant': res,
+        'average_rating': avg_rating,
+        'chart_data_reviews': chart_data_reviews,
+        'chart_data_reservations': chart_data_reservations,
+    }
+    return render(request, 'watch_infos.html', context)
 
 
 @method_decorator(decorators, name='dispatch')

@@ -16,11 +16,12 @@ class RegisterCustomer(CreateView):
 
 def mark_notification_as_read(request, notification_id):
     # Recupera la notifica specificata
-    print("sono dentrooooooooo")
+    print("hai cliccato la notifica")
     notification = get_object_or_404(Notification, id=notification_id)
     # Segna la notifica come letta
     notification.is_read = True
     notification.save()
+    print(notification.customer)
 
     # Se la notifica ha un ristorante associato
     if notification.restaurant:
@@ -31,8 +32,6 @@ def mark_notification_as_read(request, notification_id):
             messages.success(request, f"Sei stato rimosso dalla lista di attesa del ristorante {restaurant.restaurant_name}.")
 
     return redirect('homepage')
-
-
 
 
 def home_page(response):

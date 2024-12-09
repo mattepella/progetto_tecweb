@@ -27,12 +27,16 @@
             <h3>Località: {{ res.city }}</h3>
             <h3>Prezzo coperto: {{ res.price}} €</h3>
             <img src=" {{ res.image.url }}" alt="Immagine struttura" height="300" width="300"/>
-            <button type="submit" class="btn-danger">Cancella</button>
+            <button type="submit" class="btn-danger">Rimuovi</button>
         </form>
         <br>
         <form method="get" id="review" action="{% url 'book:watch_reviews' restaurant=res.restaurant_name %}">
             {% csrf_token %}
             <button type="submit" class="btn-success">RECENSIONI</button>
+        </form>
+        <form method="get" id="infos" action="{% url 'book:watch_infos' restaurant=res.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-success">INFO RISTORANTE</button>
         </form>
     {% endfor %}
 {% endblock %}
