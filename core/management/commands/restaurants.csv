@@ -1,2 +1,3 @@
-owner_id,restaurant_name,total_seats,city,start_lunch,end_lunch,start_dinner,end_dinner,price,address,image
-6,crudo modena,40,Modena,11:00,13:00,19:00,23:00,10,via emilia est 953 modena,img\crudo modena.jpg
+owner_id,restaurant_name,total_seats,city,start_lunch,end_lunch,start_dinner,end_dinner,price,address,image,tags
+6,crudo modena,40,Modena,11:00,13:00,19:00,23:00,10,via emilia est 953 modena,img\crudo modena.jpg,pizza carne
+6,osteria francescana,20,Modena,11:00,13:00,19:00,23:00,10,via stella 22 modena,img\osteria_francescana.jpg,carne pesce

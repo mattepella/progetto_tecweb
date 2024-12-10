@@ -29,6 +29,7 @@ def owner_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login
 decorators = [login_required, owner_required()]
 
 
+@login_required
 def add_review(response, restaurant):
     if response.method == "POST":
         form = ReviewForm(response.POST)
@@ -65,22 +66,18 @@ def delete_reservation(request, pk):
     reservation = get_object_or_404(Reservation, pk=pk)
     waiting_list_customers = reservation.restaurant.waiting_list.all()
 
-    # Crea notifiche per i clienti in lista d'attesa
     for customer in waiting_list_customers:
         message = f'Si sono liberati dei posti al ristorante {reservation.restaurant.restaurant_name}'
         create_notification(customer, reservation.restaurant, message)
 
-    # Cancella la prenotazione
     reservation.delete()
 
-    # Aggiungi un messaggio di successo
     messages.success(request, 'Prenotazione cancellata con successo!')
 
-    # Redirigi alla lista delle prenotazioni
     return redirect('book:watch_reservations')
 
 
-class ReservationsList(ListView):
+class ReservationsList(LoginRequiredMixin, ListView):
     template_name = 'reservation_list.html'
     model = Reservation
 
@@ -136,11 +133,13 @@ def check_reservation(res_user, restaurant, res_seats, res_datetime):
         return d
 
 
+@login_required
 def reservation(response, oid):
     if response.method == 'POST':
         restaurant = Restaurant.objects.get(id=oid)
         form = ReservationForm(response.POST)
         if form.is_valid():
+            city = restaurant.city
             date = form.cleaned_data['res_date']
             time = form.cleaned_data['res_time']
             res_datetime = datetime.combine(date, time)
@@ -162,9 +161,10 @@ def reservation(response, oid):
                         if response.user.customer not in restaurant.waiting_list.all():
                             restaurant.waiting_list.add(response.user)
                             messages.success(response, "Sei stato aggiunto alla lista di attesa!")
+                            return redirect('homepage')
                         else:
                             messages.error(response, "Sei già in lista di attesa per questo ristorante!")
-                return render(response, 'reservation.html', {'form': form, 'success': False, 'message': d['message']})
+                return render(response, 'reservation.html', {'form': form, 'success': False, 'city': city, 'message': d['message']})
             return redirect('homepage')
         else:
             form = ReservationForm()
@@ -178,7 +178,7 @@ def reservation(response, oid):
         return render(response, 'reservation.html', {'form': form, 'city': city, 'image': image, 'res_name': res_name})
 
 
-class Results(ListView):
+class Results(LoginRequiredMixin, ListView):
     template_name = 'results.html'
     model = Restaurant
 
@@ -205,8 +205,18 @@ class WatchReviews(ListView):
     model = Review
     template_name = 'watch_reviews.html'
 
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.restaurant_city = ''
+
     def get_queryset(self, **kwargs):
+        self.restaurant_city = Restaurant.objects.get(restaurant_name=self.kwargs['restaurant']).city
         return Review.objects.filter(review_res=Restaurant.objects.get(restaurant_name=self.kwargs['restaurant']))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['city'] = self.restaurant_city
+        return context
 
 
 @method_decorator(decorators, name='dispatch')
@@ -219,6 +229,7 @@ class StructureList(LoginRequiredMixin, ListView):
         return Restaurant.objects.filter(owner=user)
 
 
+@login_required
 def watchinfos(request, restaurant):
     res = get_object_or_404(Restaurant, id=restaurant)
     reservations = Reservation.objects.filter(restaurant=res)

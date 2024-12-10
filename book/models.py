@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser, User
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -10,6 +11,9 @@ class CustomUser(AbstractUser):
 class Customer(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
     short_bio = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.user.username
 
 
 class Tag(models.Model):
@@ -49,6 +53,9 @@ class Restaurant(models.Model):
         self.city = self.city.lower()
         return super(Restaurant, self).save(*args, **kwargs)
 
+    def __str__(self):
+        return self.restaurant_name
+
 
 class Review(models.Model):
     rev_customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
@@ -62,3 +69,7 @@ class Reservation(models.Model):
     seats = models.IntegerField()
     res_datetime = models.DateTimeField(default=None)
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+
+    def clean(self):
+        if self.seats > self.restaurant.total_seats:
+            raise ValidationError(f"Il numero massimo di posti per questo ristorante è: {self.restaurant.total_seats}")

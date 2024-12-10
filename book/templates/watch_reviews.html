@@ -6,7 +6,7 @@
     <h2><a href="{% url 'book:restaurant_list' %}">TORNA AI RISTORANTI</a></h2>
     {% endif %}
     {% if user.is_customer %}
-        <h2><a href="{% url 'book:results' destination=object_list.0.review_res.city %}">TORNA AI RISTORANTI</a></h2>
+        <h2><a href="{% url 'book:results' destination=city %}">TORNA AI RISTORANTI</a></h2>
     {% endif %}
 {% endblock %}
 {% block content %}
