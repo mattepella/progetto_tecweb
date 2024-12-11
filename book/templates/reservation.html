@@ -20,9 +20,11 @@
     {% endif %}
     <h1><a href="{% url 'homepage' %}">HOMEPAGE</a> </h1>
     <h2><a href="{% url 'book:results' destination=city %}">TORNA AI RISTORANTI</a> </h2>
-    <h1>Ciao {{ user.username }} effettua la tua prenotazione per {{ res_name }}: </h1><br>
+    <h1>Ciao {{ user.username }} effettua la tua prenotazione per {{ restaurant.restaurant_name }}: </h1><br>
     <form method="post" enctype="multipart/form-data">
-    <img src=" {{ image.url }}" alt="Immagine struttura" height="300" width="300"/>
+    <img src=" {{ restaurant.image.url }}" alt="Immagine struttura" height="300" width="300"/>
+    <h4>Orari del ristorante: {{ restaurant.start_lunch }}/{{ restaurant.end_lunch }}   {{ restaurant.start_dinner }}/
+    {{ restaurant.end_dinner }}</h4>
     {% csrf_token %}
     {% crispy form %}
 

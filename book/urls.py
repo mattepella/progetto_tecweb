@@ -2,8 +2,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path
 
-from .views import AddStructure, StructureList, Results, reservation, ReservationsList, \
-    DeleteRestaurant, add_review, WatchReviews, delete_reservation, watchinfos
+from .views import AddStructure, StructureList, Results, reservation, \
+    DeleteRestaurant, add_review, WatchReviews, delete_reservation, watchinfos, ReservationsList
+
 app_name = 'book'
 urlpatterns = [
     path('add_structure', AddStructure.as_view(), name='add_structure'),

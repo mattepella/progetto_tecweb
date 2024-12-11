@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
@@ -31,6 +32,15 @@ def mark_notification_as_read(request, notification_id):
             messages.success(request, f"Sei stato rimosso dalla lista di attesa del ristorante {restaurant.restaurant_name}.")
 
     return redirect('homepage')
+
+
+@login_required
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        user.delete()
+        return redirect('homepage')  # Reindirizza alla pagina iniziale dopo l'eliminazione
+    return render(request, 'registration/delete_account.html')
 
 
 def home_page(response):

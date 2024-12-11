@@ -46,12 +46,16 @@ class Restaurant(models.Model):
     end_lunch = models.TimeField()
     start_dinner = models.TimeField(null=True)
     end_dinner = models.TimeField(null=True)
-    price = models.IntegerField()
     tags = models.ManyToManyField(Tag, related_name='restaurants', blank=True)
 
     def save(self, *args, **kwargs):
         self.city = self.city.lower()
         return super(Restaurant, self).save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        if self.image:
+            self.image.delete(save=False)
+            super().delete(*args, **kwargs)
 
     def __str__(self):
         return self.restaurant_name

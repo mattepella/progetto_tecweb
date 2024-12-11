@@ -48,10 +48,6 @@ class AddStructureForm(forms.ModelForm):
         label="capienza massima:"
     )
 
-    price = forms.IntegerField(
-        label="costo del coperto:"
-    )
-
     image = forms.ImageField(
         label="Immagine:",
         widget=forms.FileInput(attrs={'class': 'image-upload'})
@@ -73,7 +69,6 @@ class AddStructureForm(forms.ModelForm):
             Field('restaurant_name', style='max-width: 400px'),
             Field('address', style='max-width: 400px'),
             Field('total_seats', style='max-width: 70px'),
-            Field('price', style='max-width: 70px'),
             Field('city', style='max-width: 300px'),
             Div(
                 Field('start_lunch', style='max-width: 80px'),
@@ -97,7 +92,7 @@ class AddStructureForm(forms.ModelForm):
     class Meta:
         model = Restaurant
         fields = ['restaurant_name', 'address', 'city', 'start_lunch', 'total_seats', 'start_dinner',
-                  'end_lunch', 'end_dinner', 'price', 'image', 'tags']
+                  'end_lunch', 'end_dinner', 'image', 'tags']
 
 
 class ReviewForm(forms.ModelForm):

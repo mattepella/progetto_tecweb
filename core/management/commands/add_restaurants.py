@@ -24,7 +24,6 @@ class Command(BaseCommand):
                         'end_lunch': row['end_lunch'],
                         'start_dinner': row['start_dinner'],
                         'end_dinner': row['end_dinner'],
-                        'price': row['price'],
                         'address': row['address'],
                         'image': row['image']
                     }

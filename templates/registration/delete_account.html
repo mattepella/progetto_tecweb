@@ -1,0 +1,9 @@
+<h1> <a href="{% url 'homepage' %}">HOMEPAGE</a></h1>
+<h2>Conferma eliminazione account</h2>
+<p>Sei sicuro di voler eliminare il tuo account? Questa operazione non può essere annullata.</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" style="color: white; background-color: red; border: none; padding: 10px;">
+        Conferma eliminazione
+    </button>
+</form>

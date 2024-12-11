@@ -29,8 +29,8 @@ class ReservationAdmin(admin.ModelAdmin):
 
     def delete_model(self, request, obj):
         waiting_list_customers = obj.restaurant.waiting_list.all()
-
         for customer in waiting_list_customers:
+            print('ci sono persone in attesa')
             message = f'Si sono liberati dei posti al ristorante {obj.restaurant.restaurant_name}'
             create_notification(customer, obj.restaurant, message)
         obj.delete()

@@ -47,21 +47,21 @@ def add_review(response, restaurant):
             return render(response, 'add_review.html', {'form': form})
     form = ReviewForm()
     city = Restaurant.objects.get(id=restaurant).city
-    return render(response, 'add_review.html', {'form': form, 'city':city})
+    return render(response, 'add_review.html', {'form': form, 'city': city})
 
 
-class DeleteRestaurant(DeleteView):
-    print('classe delete entrata')
-    template_name = 'structure_list.html'
+class DeleteRestaurant(LoginRequiredMixin, DeleteView):
     model = Restaurant
-    success_message = 'Ristorante cancellato con successo!'
-    success_url = reverse_lazy('book:structure_list')
+    template_name = 'structure_list.html'
+    success_url = reverse_lazy('book:restaurant_list')
 
-    def delete(self, request, *args, **kwargs):
-        messages.success(self.request, self.success_message)
-        return super(DeleteRestaurant, self).delete(request, *args, **kwargs)
+    def form_valid(self, form):
+        data = super().form_valid(form)
+        messages.success(self.request, 'Ristorante rimosso con successo!')
+        return data
 
 
+@login_required
 def delete_reservation(request, pk):
     reservation = get_object_or_404(Reservation, pk=pk)
     waiting_list_customers = reservation.restaurant.waiting_list.all()
@@ -148,8 +148,9 @@ def reservation(response, oid):
             if d['success']:
                 Reservation.objects.create(customer=response.user.customer, restaurant=restaurant, seats=seats,
                                            res_datetime=res_datetime)
-                message = (f'{restaurant.restaurant_name} prenotazione effettuata da {response.user.username} per il giorno: '
-                           f'{res_datetime}')
+                message = (
+                    f'{restaurant.restaurant_name} prenotazione effettuata da {response.user.username} per il giorno: '
+                    f'{res_datetime}')
                 create_notification(restaurant.owner, restaurant=restaurant, message=message)
                 messages.success(response, d['message'])
             else:
@@ -164,21 +165,26 @@ def reservation(response, oid):
                             return redirect('homepage')
                         else:
                             messages.error(response, "Sei già in lista di attesa per questo ristorante!")
-                return render(response, 'reservation.html', {'form': form, 'success': False, 'city': city, 'message': d['message']})
+                return render(response, 'reservation.html',
+                              {'form': form, 'success': False, 'city': city, 'message': d['message'],
+                               'restaurant': restaurant})
             return redirect('homepage')
         else:
             form = ReservationForm()
-            return render(response, 'reservation.html', {'form': form})
+            return render(response, 'reservation.html', {
+                'form': form, 'restaurant': restaurant, 'image': restaurant.image,
+                'res_name': restaurant.restaurant_name, 'city': restaurant.city
+            })
     else:
         form = ReservationForm()
         restaurant = Restaurant.objects.get(id=oid)
-        image = restaurant.image
-        city = restaurant.city
-        res_name = restaurant.restaurant_name
-        return render(response, 'reservation.html', {'form': form, 'city': city, 'image': image, 'res_name': res_name})
+        return render(response, 'reservation.html', {
+            'form': form, 'restaurant': restaurant, 'image': restaurant.image,
+            'res_name': restaurant.restaurant_name, 'city': restaurant.city
+        })
 
 
-class Results(LoginRequiredMixin, ListView):
+class Results(ListView):
     template_name = 'results.html'
     model = Restaurant
 
@@ -270,5 +276,6 @@ class AddStructure(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('homepage')
 
     def form_valid(self, form):
+        messages.success(self.request, 'Ristorante aggiunto con successo!')
         form.instance.owner = self.request.user
         return super().form_valid(form)

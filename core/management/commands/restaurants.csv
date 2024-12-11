@@ -1,3 +1,11 @@
-owner_id,restaurant_name,total_seats,city,start_lunch,end_lunch,start_dinner,end_dinner,price,address,image,tags
-6,crudo modena,40,Modena,11:00,13:00,19:00,23:00,10,via emilia est 953 modena,img\crudo modena.jpg,pizza carne
-6,osteria francescana,20,Modena,11:00,13:00,19:00,23:00,10,via stella 22 modena,img\osteria_francescana.jpg,carne pesce
+owner_id,restaurant_name,total_seats,city,start_lunch,end_lunch,start_dinner,end_dinner,address,image,tags
+15,crudo modena,40,Modena,11:00,13:00,19:00,23:00,via emilia est 953 modena,img\crudo modena.jpg,pizza carne
+15,osteria francescana,20,Modena,11:00,13:00,19:00,23:00,via stella 22 modena,img\osteria_francescana.jpg,carne pesce vegetariano
+15,dissonanti,20,Modena,11:00,13:00,19:00,23:00,via jacopo berengario 110 modena,img\dissonanti.jpg,carne pesce pizza vegetariano
+16,il mattatoio,20,Modena,11:00,13:00,19:00,23:00,via jacopo berengario 86 modena,img\mattatoio.jpg,carne
+16,il pesciaio,20,Modena,11:00,13:00,19:00,23:00,str barchetta 280 modena,img\pesciaio.jpg,pesce
+17,pizzikotto,20,Carpi,11:00,13:00,19:00,23:00,via aldo moro 22 carpi,img\pizzicotto.jpg,pizza carne
+17,trattoria cognento,20,Carpi,11:00,13:00,19:00,23:00,via delle nazioni unite carpi,img\cognento.jpg,carne pesce pizza vegetariano
+18,bla bla,20,Carpi,11:00,13:00,19:00,23:00,via guastalla 66 carpi,img\blabla.jpg,carne pesce
+18,acquapazza,20,Carpi,11:00,13:00,19:00,23:00,via gruppo 7 carpi,img\acquapazza.jpg,pesce
+18,giustospirito,20,Carpi,11:00,13:00,19:00,23:00,via delle rezdore carpi,img\giustospirito.jpg,carne pizza

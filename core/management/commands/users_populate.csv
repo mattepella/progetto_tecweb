@@ -1,6 +1,12 @@
 username,is_customer,is_owner,password,short_bio
 user1,True,False,securepassword1,"Mi piace cucinare"
 user2,True,False,securepassword2,"Amo viaggiare"
+user3,True,False,securepassword3,"mi piace recensire ristoranti"
 user4,True,False,securepassword4,"mi piace il buon cibo"
+user5,True,False,securepassword5,"mi piace cucinare"
 owner1,False,True,ownerpassword1
 owner2,False,True,ownerpassword2
+owner3,False,True,ownerpassword3
+owner4,False,True,ownerpassword4
+owner5,False,True,ownerpassword5
+owner6,False,True,ownerpassword6

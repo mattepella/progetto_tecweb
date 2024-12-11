@@ -53,7 +53,10 @@
                             {% csrf_token %}
                             <button type="submit" class="dropdown-item">Logout</button>
                         </form>
-
+                        <div class="dropdown-divider"></div>
+                         <div class="dropdown-item">
+                            <a href="{% url 'delete_account' %}" style="color: red; text-decoration: none;"><strong>Rimuovi account</strong></a>
+                        </div>
                     {% else %}
                         <a class="dropdown-item" href="{% url 'owner-registration' %}">Registrati come proprietario</a>
                         <a class="dropdown-item" href="{% url 'customer-registration' %}">Registrati</a>
