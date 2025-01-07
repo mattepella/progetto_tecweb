@@ -114,6 +114,7 @@ class ReviewForm(forms.ModelForm):
         widget=forms.NumberInput(attrs={'min': 1, 'max': 5})
     )
 
+
     class Meta:
         fields = ['review_text', 'review_value']
         model = Review

@@ -31,6 +31,8 @@ decorators = [login_required, owner_required()]
 
 @login_required
 def add_review(response, restaurant):
+    form = ReviewForm()
+    city = Restaurant.objects.get(id=restaurant).city
     if response.method == "POST":
         form = ReviewForm(response.POST)
         if form.is_valid():
@@ -42,11 +44,10 @@ def add_review(response, restaurant):
             res = Restaurant.objects.get(id=restaurant)
             Review.objects.create(review_res=res, rev_customer_id=response.user.id, review_value=value,
                                   review_text=text)
+            messages.success(response, "Recensione aggiunta con successo!!")
             return redirect('homepage')
         else:
-            return render(response, 'add_review.html', {'form': form})
-    form = ReviewForm()
-    city = Restaurant.objects.get(id=restaurant).city
+            return render(response, 'add_review.html', {'form': form, 'city': city})
     return render(response, 'add_review.html', {'form': form, 'city': city})
 
 
@@ -102,6 +103,10 @@ def check_time(restaurant, res_time):
 
 def check_reservation(res_user, restaurant, res_seats, res_datetime):
     d = {}
+    if res_seats <= 0:
+        d['success'] = False
+        d['message'] = 'numero di persone non valido'
+        return d
     if res_datetime < datetime.now():
         d['success'] = False
         d['message'] = 'Non puoi effettuare una prenotazione nel passato'
