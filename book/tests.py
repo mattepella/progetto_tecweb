@@ -1,5 +1,6 @@
+from django.contrib.auth import authenticate
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
+from django.test import TestCase, Client
 from book.models import CustomUser, Restaurant, Customer, Reservation, Review
 from django.urls import reverse
 from datetime import time, date, datetime
@@ -208,3 +209,57 @@ class TestReviews(TestCase):
         customer = Customer.objects.get(user=self.test_user)
         reviews = Review.objects.filter(rev_customer=customer, review_res=self.restaurant)
         self.assertEqual(reviews.count(), 1)
+
+
+class TestAccount(TestCase):
+
+    def setUp(self):
+
+        self.test_user = CustomUser.objects.create_user(
+            username='test_user',
+            password='test_password',
+            is_owner=False,
+            is_customer=True
+        )
+
+        self.test_owner = CustomUser.objects.create_user(
+            username='owner_test',
+            password='test_password',
+            is_owner=True,
+            is_customer=False
+        )
+
+        self.restaurant = Restaurant.objects.create(
+            restaurant_name="Test Restaurant",
+            owner=self.test_owner,
+            city="Test City",
+            total_seats=40,
+            start_lunch="12:00",
+            end_lunch="14:00",
+            start_dinner="18:00",
+            end_dinner="22:00",
+            image=SimpleUploadedFile(name='test.jpg', content=b"test image content", content_type='image/jpeg')
+        )
+
+    def test_logged(self):
+        user = authenticate(username='test_user', password='test_password')
+        self.assertIsNotNone(user)
+        self.assertEqual(user.username, 'test_user')
+
+    def test_wrong_credentials(self):
+        user = authenticate(username='test_user', password='wrong')
+        self.assertIsNone(user)
+
+    def test_owner_access_infos(self):
+        client = Client()
+        client.login(username='owner_test', password='test_password')
+        response = client.get(reverse('book:watch_infos', kwargs={'restaurant': self.restaurant.id}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_owner_wrong_access_infos(self):
+        client = Client()
+        client.login(username='test_user', password='test_password')
+        response = client.get(reverse('book:watch_infos', kwargs={'restaurant': self.restaurant.id}))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/login/?next=/book/infos/1/infos')
+

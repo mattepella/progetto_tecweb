@@ -240,7 +240,7 @@ class StructureList(LoginRequiredMixin, ListView):
         return Restaurant.objects.filter(owner=user)
 
 
-@login_required
+@owner_required
 def watchinfos(request, restaurant):
     res = get_object_or_404(Restaurant, id=restaurant)
     reservations = Reservation.objects.filter(restaurant=res)
