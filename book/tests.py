@@ -262,4 +262,3 @@ class TestAccount(TestCase):
         response = client.get(reverse('book:watch_infos', kwargs={'restaurant': self.restaurant.id}))
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/login/?next=/book/infos/1/infos')
-
