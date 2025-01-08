@@ -9,6 +9,10 @@ Caratteristiche principali:
     Grafici: Visualizzazione dei dati sugli andamenti dei ristoranti.
     Admin: Pieno controllo sulle operazioni tramite un'interfaccia amministrativa.
 
+INFORMAZIONI DI UTILIZZO:
+il database del sito è stato impostato per avere dei ristoranti, nelle città di Carpi e Modena.
+Essendo a scopo didattico non è sembrato utile aggiungere molte altre città.
+
 
   __________________________
 
